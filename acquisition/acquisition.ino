@@ -7,12 +7,16 @@ int s2 = PIN_B2;
 int s3 = PIN_B3;
 int E = PIN_B4;
 
+// define packet parameters
+//const byte PACKET_START_BYTE = 0xAA;
+//const unsigned int PACKET_OVERHEAD_BYTES = 3;
+//const unsigned int PACKET_MIN_BYTES = PACKET_OVERHEAD_BYTES + 1;
+//const unsigned int PACKET_MAX_BYTES = 255;
+
 // outside leads to ground and +5V
 int val = 0;           // variable to store the value read
-int l0 = 0, l1 =0;
-float last_value[9];
-Statistic myStats[9];
-float volts_to_psi(float v)
+//int l0 = 0, l1 =0;
+float to_psi(float v)
 {
   v = v/1023.0*5.0;
   return (v + 5.0*0.004)/(5.0*0.004)*0.145037738;
@@ -25,44 +29,23 @@ void setup()
   pinMode(PIN_B2, OUTPUT);
   pinMode(PIN_B3, OUTPUT);
   pinMode(PIN_B4, OUTPUT);
-  for (int i=0; i<10; i++) myStats[i].clear();
+//  for (int i=0; i<10; i++) myStats[i].clear();
 }
 
 void loop()
 {
-
-  setMux(0);
-  l0 = analogRead(analogPin);    // read the input pin
+//  l0 = analogRead(analogPin);    // read the input pin
   int i;
-
+  
   for (i=0; i<10; i++){
     setMux(i);
     Serial.printf(" l%d: ", i);
-    last_value[i] = volts_to_psi(analogRead(analogPin));
-    Serial.print(last_value[i]);
-    myStats[i].add(last_value[i]);
+    Serial.print(to_psi(analogRead(analogPin)));
   }
   Serial.printf("\n");
 
-  for (i=0; i<10; i++)
-  {
-    Serial.print(" Hi: ");
-    Serial.print(myStats[i].maximum());
-  }
-  Serial.printf("\n");
-  for (i=0; i<10; i++)
-  {
-    Serial.print(" Lo: ");
-    Serial.print(myStats[i].minimum());
-  }
-  Serial.printf("\n");
-  for (i=0; i<10; i++)
-  {
-    Serial.print(" Av: ");
-    Serial.print(myStats[i].average());
-  }
-  Serial.printf("\n");
-  delay(100);
+  //wait 100 ms
+  delay(50);
 }
 void setMux(int channel){
   int controlPin[] = {s0, s1, s2, s3};
