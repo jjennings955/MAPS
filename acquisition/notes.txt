@@ -1,0 +1,4 @@
+Do we want to sync the time from the host pc to the Teensy?
+
+I imported a time library but it only keeps track of seconds. Is this what we want?
+

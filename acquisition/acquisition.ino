@@ -1,5 +1,5 @@
 
-#include "Statistic.h"
+#include <Time.h>
 int analogPin = 1;
 int s0 = PIN_B0;
 int s1 = PIN_B1;
@@ -8,49 +8,57 @@ int s3 = PIN_B3;
 int E = PIN_B4;
 
 // define packet parameters
-//const byte PACKET_START_BYTE = 0xAA;
-//const unsigned int PACKET_OVERHEAD_BYTES = 3;
-//const unsigned int PACKET_MIN_BYTES = PACKET_OVERHEAD_BYTES + 1;
-//const unsigned int PACKET_MAX_BYTES = 255;
+const byte PACKET_START_BYTE = 0xAA;
+const unsigned int PACKET_OVERHEAD_BYTES = 3;
+const unsigned int PACKET_MIN_BYTES = PACKET_OVERHEAD_BYTES + 1;
+const unsigned int PACKET_MAX_BYTES = 64;
 
-// outside leads to ground and +5V
-int val = 0;           // variable to store the value read
-//int l0 = 0, l1 =0;
-float to_psi(float v)
-{
+unsigned int val = 0;           // variable to store the value read
+float to_psi(float v) {
   v = v/1023.0*5.0;
   return (v + 5.0*0.004)/(5.0*0.004)*0.145037738;
 }
-void setup()
-{
-  Serial.begin(250000);          //  setup serial
+// Initial setup
+void setup() {
+  Serial.begin(250000);          //  Baud rate ignored for USB
   pinMode(PIN_B0, OUTPUT);
   pinMode(PIN_B1, OUTPUT);
   pinMode(PIN_B2, OUTPUT);
   pinMode(PIN_B3, OUTPUT);
   pinMode(PIN_B4, OUTPUT);
-//  for (int i=0; i<10; i++) myStats[i].clear();
 }
 
-void loop()
-{
+// The main loop
+void loop() {
 //  l0 = analogRead(analogPin);    // read the input pin
-  int i;
-  
-  for (i=0; i<10; i++){
-    setMux(i);
-    Serial.printf(" l%d: ", i);
-    Serial.print(to_psi(analogRead(analogPin)));
-  }
-  Serial.printf("\n");
 
-  //wait 100 ms
+  for (int i=0; i<10; i++){
+    // tells muliplexer to read pin i
+//    setMux(i);
+//    Serial.printf(" l%d: ", i);
+//    Serial.print(to_psi(analogRead(PIN_F0)));
+//    Serial.print(analogRead(PIN_F0));
+  }
+//  Serial.printf("\n");
+
+    setMux(0);
+//  Serial.printf("sizeof(): %d, thing: %d\n",sizeof(analogRead(PIN_F0)) , analogRead(PIN_F0));
+  val = analogRead(PIN_F0);
+  byte buf[4];
+  buf[0] = (byte) val;
+  buf[1] = (byte) val >> 8;
+//  buf[2] = (byte) val >> 16;
+//  buf[3] = (byte) val >> 24;
+  sendPacket(sizeof(buf), buf);
+  
+  //wait some time in ms
   delay(50);
 }
-void setMux(int channel){
+
+void setMux(int channel) {
   int controlPin[] = {s0, s1, s2, s3};
 
-  int muxChannel[16][4]={
+  int muxChannel[16][4]= {
     {0,0,0,0}, //channel 0
     {1,0,0,0}, //channel 1
     {0,1,0,0}, //channel 2
@@ -69,11 +77,40 @@ void setMux(int channel){
     {1,1,1,1}  //channel 15
   };
 
-
-
   //loop through the 4 sig
-  for(int i = 0; i < 4; i ++){
+  for(int i = 0; i < 4; i ++) {
     digitalWrite(controlPin[i], muxChannel[channel][i]);
   }
   digitalWrite(E,1);
+}
+
+boolean sendPacket(int payloadSize, byte *payload)
+{
+  // check for max payload size
+  unsigned int packetSize = payloadSize + PACKET_OVERHEAD_BYTES;
+  if(packetSize > PACKET_MAX_BYTES) {
+    return false;
+  }
+
+  // create the serial packet transmit buffer
+  static byte packet[PACKET_MAX_BYTES];
+
+  // populate the overhead fields
+  packet[0] = PACKET_START_BYTE;
+  packet[1] = packetSize;
+  byte checkSum = packet[0] ^ packet[1];
+
+  // populate the packet payload while computing the checksum
+  for(int i = 0; i < payloadSize; i++) {
+    packet[i + 2] = payload[i];
+    checkSum = checkSum ^ packet[i + 2];
+  }
+
+  // store the checksum
+  packet[packetSize - 1] = checkSum;
+
+  // send the packet
+  Serial.write(packet, packetSize);
+  Serial.flush();
+  return true;
 }
