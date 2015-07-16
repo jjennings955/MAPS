@@ -47,9 +47,15 @@ void loop() {
   byte buf[4];
   buf[0] = (byte) val;
   buf[1] = (byte) val >> 8;
+//  Serial.print(val);
+//  Serial.print(" :");
+//  Serial.print(buf[0]);
+//  Serial.print(" ");
+//  Serial.print(buf[1]);
+//  Serial.print("\n");
 //  buf[2] = (byte) val >> 16;
 //  buf[3] = (byte) val >> 24;
-  sendPacket(sizeof(buf), buf);
+//  sendPacket(sizeof(buf), buf);
   
   //wait some time in ms
   delay(50);
