@@ -17,7 +17,9 @@ PACKET_MAX_BYTES = 255
 #     print(line)
 # ser.close()
 
-
+def analog_to_psi(v):
+    v = v/1023.0*5.0;
+    return (v + 5.0*0.004)/(5.0*0.004)*0.145037738;
 
 
 def readSerial():
@@ -30,8 +32,11 @@ def readSerial():
     def printPayload(packetSize, payload):
         payloadSize = packetSize - PACKET_OVERHEAD_BYTES
         value = bytes_to_int(payload[2:4])
+        id = bytes_to_int(payload[4:6])
         print(payload)
         print(value)
+        print(id)
+        return (analog_to_psi(value[0]), id[0])
 
     def bytes_to_int(bytes):
         # return int(bytes.encode('hex'), 16)
@@ -44,9 +49,9 @@ def readSerial():
         # print(merged)
         return merged
     #lab's ubuntu
-    # ser = serial.Serial('/dev/ttyACM0', 19200, timeout=1)
+    ser = serial.Serial('/dev/ttyACM0', 19200, timeout=1)
     #Timothy's windows
-    ser = serial.Serial('com3', 19200, timeout=1)
+    # ser = serial.Serial('com3', 19200, timeout=1)
     isRunning = True
     buffer = []
     count = 0
@@ -78,7 +83,10 @@ def readSerial():
             if count >= packetSize:
                 if validatePacket(packetSize, buffer):
                     #TODO pass buffer on to aggregation
-                    printPayload(packetSize, buffer)
+                    val,id = printPayload(packetSize, buffer)
+                    print(val,id)
+                    return (val,id)
+
                 count = 0
                 buffer = []
 
