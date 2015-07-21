@@ -43,8 +43,9 @@ void loop() {
 
     setMux(0);
 //  Serial.printf("sizeof(): %d, thing: %d\n",sizeof(analogRead(PIN_F0)) , analogRead(PIN_F0));
-  val = analogRead(PIN_F0);
-  byte buf[4];
+//  val = analogRead(PIN_F0);
+  val = 800;
+  byte buf[2];
   buf[0] = (byte) val;
   buf[1] = (byte) val >> 8;
 //  Serial.print(val);
@@ -55,7 +56,11 @@ void loop() {
 //  Serial.print("\n");
 //  buf[2] = (byte) val >> 16;
 //  buf[3] = (byte) val >> 24;
-//  sendPacket(sizeof(buf), buf);
+
+//  buf[0] = (byte) 1;
+//  buf[1] = (byte) 2;
+  
+  sendPacket(sizeof(buf), buf);
   
   //wait some time in ms
   delay(50);

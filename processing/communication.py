@@ -1,3 +1,4 @@
+import struct
 import serial
 # define packet parameters
 PACKET_START_BYTE = 0xAA
@@ -28,15 +29,24 @@ def readSerial():
         return True
     def printPayload(packetSize, payload):
         payloadSize = packetSize - PACKET_OVERHEAD_BYTES
-        value = bytes_to_int(payload[2:3])
+        value = bytes_to_int(payload[2:4])
+        print(payload)
         print(value)
 
     def bytes_to_int(bytes):
         # return int(bytes.encode('hex'), 16)
-        return bytes
-
-    ser = serial.Serial('/dev/ttyACM0', 19200, timeout=1)
-    # ser = serial.Serial('com3', 19200, timeout=1)
+        # print(struct.pack('BB', bytes[0], bytes[1]))
+        # B is unsigned char
+        print(bytes)
+        temp = struct.pack('BB', bytes[0], bytes[1])
+        # h is short (2 byte int)
+        merged = struct.unpack('<h', temp)
+        # print(merged)
+        return merged
+    #lab's ubuntu
+    # ser = serial.Serial('/dev/ttyACM0', 19200, timeout=1)
+    #Timothy's windows
+    ser = serial.Serial('com3', 19200, timeout=1)
     isRunning = True
     buffer = []
     count = 0
@@ -52,6 +62,7 @@ def readSerial():
                 buffer.append(b)
                 count += 1
             elif count == 0:
+                #ignore and look at next byte for PACKET_START_BYTE
                 pass
             elif count == 1:
                 buffer.append(b)
