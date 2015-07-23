@@ -1,4 +1,5 @@
 import rospy
+#from rospy import *
 from std_msgs.msg import String
 from calibration import set_threshholds, get_threshhold
 import random
@@ -10,9 +11,10 @@ class EventManager(object):
     def publish_packet(self, sensor_id, sensor_value):
         threshhold = get_threshhold(sensor_id)
         if sensor_value > threshhold:
-            self.publisher.publish("Sensor: %d, Pressure: %d" % (sensor_id, sensor_value))
+            self.publisher.publish("Sensor: %d, Pressure: %f" % (sensor_id, sensor_value))
     def sleep(self):
-        rospy.Rate(10).sleep()
+        pass
+        #rospy.Rate(1000).sleep()
 
 if __name__ == '__main__':
     try:
