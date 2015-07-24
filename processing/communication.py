@@ -1,5 +1,6 @@
 import struct
 import serial
+import sys
 # define packet parameters
 PACKET_START_BYTE = 0xAA
 PACKET_OVERHEAD_BYTES = 3
@@ -15,12 +16,16 @@ def validate_packet(packet_size, packet):
     """will validate the given packet to ensure is is not corrupted."""
     # check if first is start byte
     if packet[0] != PACKET_START_BYTE:
+        print("failed PACKET_START_BYTE")
         return False
 
     # check if crc is valid
-    for i in range(0, packet_size):
+    crc = packet[0] ^ packet[1]
+    for i in range(2, packet_size-1):
         crc = crc ^ packet[i]
     if crc != packet[packet_size-1]:
+        print("failed CRC")
+        print(crc)
         return False
 
     # if each condition is passed return true
@@ -38,23 +43,17 @@ def extract_payload(packet):
     # print(value)
     return pin_id, analog_to_psi(value)
 
-# def bytes_to_int(bytes):
-#     # return int(bytes.encode('hex'), 16)
-#     # print(struct.pack('BB', bytes[0], bytes[1]))
-#     # B is unsigned char
-#     print(bytes)
-#     temp = struct.pack('BB', bytes[0], bytes[1])
-#     # h is short (2 byte int)
-#     merged = struct.unpack('<h', temp)
-#     # print(merged)
-#     return merged
-
 def readSerial():
     """Will read the Serial and look for packets according to spec."""
     #lab's ubuntu
-    # ser = serial.Serial('/dev/ttyACM0', 19200, timeout=1)
+    if sys.platform.startswith('linux'):
+        ser = serial.Serial('/dev/ttyACM0', 19200, timeout=1)
     #Timothy's windows
-    ser = serial.Serial('com3', 250000, timeout=1)
+    elif sys.platform.startswith('win'):
+        ser = serial.Serial('com3', 250000, timeout=1)
+    else:
+        print('freak out!')
+
     is_running = True
     packet = []
     count = 0
@@ -92,5 +91,9 @@ def readSerial():
                 count = 0
                 packet = []
 # for testing
-while True:
-    print(readSerial())
+if __name__ == "__main__":
+    while True:
+        print(readSerial())
+    # pin_id, val = readSerial()
+    # if pin_id == 0:
+    #     print(readSerial())
