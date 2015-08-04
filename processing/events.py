@@ -22,6 +22,11 @@ class EventManager(object):
         threshhold = get_threshhold(sensor_id)
         if sensor_value > threshhold:
             self.publisher.publish("Sensor: %d, Pressure: %f" % (sensor_id, sensor_value))
+
+    def check_failures(self, sensor_id, sensor_value, fail_ceil, fail_floor):
+        if sensor_value < fail_ceil or sensor_value > fail_floor:
+            self.failure_publisher.publish("Sensor: %d" % (sensor_id))
+
     def sleep(self):
         rospy.Rate(1000).sleep()
 

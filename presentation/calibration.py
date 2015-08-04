@@ -9,8 +9,7 @@ class MAPSInterface(object):
     def calibrate(self, percent):
         self.publisher.publish('autocalibrate %f' % (percent))
         rospy.Rate(1000).sleep()
-#interface = MAPSInterface()
+
 def calibrate(percent):
-    print("Hello")
     interface = MAPSInterface()
     interface.calibrate(percent/100.0)
