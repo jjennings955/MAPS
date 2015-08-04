@@ -1,4 +1,4 @@
-
+# THIS FILE MAY BE ENTIRELY UNNECESSARY
 SensorList = []
 
 

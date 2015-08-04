@@ -11,6 +11,5 @@ class MAPSInterface(object):
         rospy.Rate(1000).sleep()
 
 def calibrate(percent):
-    print("Hello")
     interface = MAPSInterface()
     interface.calibrate(percent/100.0)

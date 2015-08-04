@@ -5,8 +5,10 @@ from calibration import set_threshholds, get_threshhold, auto_calibrate
 #import random
 from communication import readSerial
 import aggregation
+
 def debug(foo):
     print foo
+
 class EventManager(object):
     def __init__(self):
         rospy.init_node('MAPS_talker', anonymous=True)
