@@ -13,6 +13,7 @@ def initialize(n):
 def update(which, val):
     rospy.set_param('current_value/%d' % which, val)
 
+
 class AggregationBuffer(object):
     def __init__(self, window_size=1):
         self.history = np.zeros(dtype=np.float32, shape=(window_size,1))
