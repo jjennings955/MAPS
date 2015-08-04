@@ -12,7 +12,7 @@ class EventManager(object):
         rospy.init_node('MAPS_talker', anonymous=True)
         self.publisher = rospy.Publisher('pressure_events', String, queue_size=1)
         self.command_manager = rospy.Subscriber("MAPScommand", String, self.handle_event)
-
+        self.failure_publisher = rospy.Publisher('failure_events', String, queue_size=1)
     def handle_event(self, data):
         command, arg = data.data.split(' ')
         if command == 'autocalibrate':

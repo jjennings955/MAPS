@@ -15,7 +15,7 @@ def set_threshhold(which, threshhold_floor, threshhold_ceil):
     rospy.set_param('ceil_threshold/%d' % which, threshhold_ceil)
 
 def get_floor_threshold(which):
-    return rospy.get_param('floor_threshold/d' % which, 0)
+    return rospy.get_param('floor_threshold/%d' % which, 0)
 
 def get_ceil_threshold(which):
     return rospy.get_param('ceil_threshold/%d' % which, 500)
