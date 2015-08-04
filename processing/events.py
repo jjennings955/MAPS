@@ -12,7 +12,8 @@ def debug(foo):
 class EventManager(object):
     def __init__(self):
         rospy.init_node('MAPS_talker', anonymous=True)
-        self.publisher = rospy.Publisher('pressure_events', String, queue_size=100)
+        self.publisher = rospy.Publisher('pressure_events', String, queue_size=1)
+        self.failure_publisher = rospy.Publisher('failure_events', String, queue_size=1)
         self.command_manager = rospy.Subscriber("MAPScommand", String, self.handle_event)
 
     def handle_event(self, data):
@@ -24,6 +25,11 @@ class EventManager(object):
         threshhold = get_threshhold(sensor_id)
         if sensor_value > threshhold:
             self.publisher.publish("Sensor: %d, Pressure: %f" % (sensor_id, sensor_value))
+
+    def check_failures(self, sensor_id, sensor_value, fail_ceil, fail_floor):
+        if sensor_value < fail_ceil or sensor_value > fail_floor:
+            self.failure_publisher.publish("Sensor: %d" % (sensor_id))
+
     def sleep(self):
         rospy.Rate(1000).sleep()
 
