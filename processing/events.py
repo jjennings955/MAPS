@@ -10,7 +10,7 @@ def debug(foo):
 class EventManager(object):
     def __init__(self):
         rospy.init_node('MAPS_talker', anonymous=True)
-        self.publisher = rospy.Publisher('pressure_events', String, queue_size=100)
+        self.publisher = rospy.Publisher('pressure_events', String, queue_size=1)
         self.command_manager = rospy.Subscriber("MAPScommand", String, self.handle_event)
 
     def handle_event(self, data):
