@@ -1,6 +1,7 @@
 import rospy
 from std_msgs.msg import String
 
+
 class MAPSInterface(object):
     def __init__(self):
        # rospy.init_node('MAPS_interface', anonymous=True)

@@ -6,11 +6,14 @@ def set_windowsize(n=10):
     rospy.set_param('aggregation_windowsize', n)
 def get_current_values():
     return rospy.get_param('current_value', {})
-def initialize(n):
+def get_current_value(which):
+    return rospy.get_param('current_value/%d' % which)
+
+def aggregation_initialize(n):
     for i in range(n):
         rospy.set_param('current_value/%d' % i, 0)
 
-def update(which, val):
+def aggregation_update(which, val):
     rospy.set_param('current_value/%d' % which, val)
 
 
