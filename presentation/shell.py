@@ -9,28 +9,28 @@
 ######################################################################
 try:
     from calibration import *
+    DEBUG = False
+    def get_threshhold(which):
+        return rospy.get_param('calibration_threshold/%d' % (which), 0)
+
+    def get_current_value(which):
+        return rospy.get_param('current_value/%d' % which, 0)
 except:
     from calibrationdummy import *
+    DEBUG = True
+    def get_threshhold(which):
+        return 0.0
+    def get_current_value(which):
+        return 0.0
 
-import subprocess
+
+import re
 from communication import *
 from recording import DataRecorder
-import validation
-import Tkinter
 from Tkinter import *
-import tkMessageBox
-import rospy
-import signal
-import os
-
-from std_msgs.msg import String
 # Intermediary Functions
 
-def get_threshhold(which):
-    return rospy.get_param('calibration_threshold/%d' % (which), 0)
 
-def get_current_value(which):
-    return rospy.get_param('current_value/%d' % which, 0)
 
 
 def calibrate_button():
@@ -121,9 +121,10 @@ Checkbutton(master, text="Filter", variable=FilterCheckbox).grid(row=4, column=2
 
 if __name__ == "__main__":
     # Run GUI
-    rospy.init_node('MAPS_listener')
-    update_values()
+    if not DEBUG:
+        rospy.init_node('MAPS_listener')
+        update_values()
 
-    #rospy.Subscriber("/pressure_events", String, update_value)
-    #rospy.spin()
+        rospy.Subscriber("/pressure_events", String, update_value)
+        rospy.spin()
     master.mainloop()
