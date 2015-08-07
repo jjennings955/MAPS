@@ -14,8 +14,10 @@ class DataRecorder(object):
 
     def add_topic(self, topic):
         self._topics[topic] = True
+
     def topics(self):
         return self._topics.keys()
+
     def remove_topic(self, topic):
         if topic in self._topics:
             del self._topics[topic]
@@ -23,6 +25,7 @@ class DataRecorder(object):
     def start(self):
         self.process = subprocess.Popen(self.record_params + self.topics(), preexec_fn=os.setsid)
         self.recording = True
+
     def stop(self):
         os.killpg(self.process.pid, signal.SIGINT)
 

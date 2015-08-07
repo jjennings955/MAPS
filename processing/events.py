@@ -34,7 +34,7 @@ class EventManager(object):
             self.publisher.publish("Sensor: %d, Pressure: %f" % (sensor_id, sensor_value))
 
     def check_failures(self, sensor_id, sensor_value, fail_ceil, fail_floor):
-        if sensor_value < fail_ceil or sensor_value > fail_floor:
+        if sensor_value > fail_ceil or sensor_value < fail_floor:
             self.failure_publisher.publish("Sensor: %d" % (sensor_id))
             return True
         return False

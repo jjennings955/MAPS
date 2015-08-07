@@ -3,27 +3,36 @@ from events import EventManager
 from aggregation import AggregationBuffer, aggregation_initialize, aggregation_update
 from calibration import set_threshholds, set_threshhold
 from failuredetect import *
+from filtering import apply_filter
+import numpy as np
 
 class Controller(object):
     def __init__(self, num_sensors=16, aggregation_window=10):
         self.eventManager = EventManager()
         self.num_sensors = num_sensors
         self.aggregation_buffers = [AggregationBuffer(aggregation_window) for i in range(num_sensors)]
-        set_threshholds(dict(zip([str(i) for i in range(num_sensors)], [0 for i in range(num_sensors)]))) # Initialize all threshholds to 0
+        default_threshhold_dict = dict(zip([str(i) for i in range(num_sensors)], [0 for i in range(num_sensors)]))
+        set_threshholds(default_threshhold_dict) # Initialize all threshholds to 0
         aggregation_initialize(16)
+
+    def valid_pin(self, number):
+        return number > 0 and number <= self.num_sensors
 
     def run(self):
         try:
+            weights = np.ones(dtype=np.float32, shape=(10,1))/10
             while True:
                 val, pin_id = readSerial()
-                if pin_id < 0 or pin_id >= self.num_sensors:
+                if not self.valid_pin(pin_id):
                     continue
                 aggregation_update(pin_id, val)
                 floor_thresh = get_floor_threshold(pin_id)
-                ceil_thresh = get_ceil_threshold(pin_id)
+                ceil_thresh = 50
                 if not self.eventManager.check_failures(pin_id, val, ceil_thresh, floor_thresh):
                     # no failures
-                    self.eventManager.publish_packet(pin_id, val)
+                    vals = self.aggregation_buffers[pin_id].history.T
+                    filtered_val = apply_filter(vals, weights)
+                    self.eventManager.publish_packet(pin_id, filtered_val)
                     self.aggregation_buffers[pin_id].add(val)
                 self.eventManager.sleep()
 

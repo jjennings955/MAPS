@@ -25,6 +25,7 @@ class AggregationBuffer(object):
         self.tail_ptr = 0
         self.full = False
         self.empty = True
+
     def add(self, item):
         self.empty = False
         if not self.full:
@@ -48,7 +49,6 @@ class AggregationBuffer(object):
         window = self.window()
         if window is not None:
             return np.mean(window)
-
 
     def median(self):
         window = self.window()
