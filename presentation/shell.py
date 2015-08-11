@@ -28,6 +28,7 @@ import re
 from communication import *
 from recording import DataRecorder
 from Tkinter import *
+from fileinput import Sensor, read_layout_file
 # Intermediary Functions
 
 
@@ -74,26 +75,33 @@ def record_button():
 def get_thresh_str(sensor):
     return "Thresh:  %.2f" % get_threshhold(sensor)
 
-for i in range(0, 16):
-    SensorValue.append(0.0)
-    SensorThreshold.append(0.0)
-    if i >= 8:
-        tmp = str(i+1) + ":  " + str(SensorValue[i]) + " PSI" + "\n" + get_thresh_str(i)
-        SensorLabel.append(Label(master, text=tmp))
-        SensorLabel[i].grid(row=i-8, column=1, padx=5, pady=5)
-    else:
-        tmp = str(i+1) + ":  " + str(SensorValue[i]) + " PSI" + "\n" + get_thresh_str(i)
-        SensorLabel.append(Label(master, text=tmp))
-        SensorLabel[i].grid(row=i, column=0, padx=5, pady=5)
+sensor_objs = read_layout_file('whatever.csv')
+sensor_widgets = {}
+for id, sensor in sensor_objs.iteritems()
+    canvas = sensor.create_canvas(master)
+    canvas.grid(row=sensor.row, column=sensor.col, padx=1, pady=1)
+    sensor_widgets[id] = canvas
 
-# UNUSED?
+# for i in range(0, 16):
+#     SensorValue.append(0.0)
+#     SensorThreshold.append(0.0)
+#     if i >= 8:
+#         tmp = str(i+1) + ":  " + str(SensorValue[i]) + " PSI" + "\n" + get_thresh_str(i)
+#         SensorLabel.append(Label(master, text=tmp))
+#         SensorLabel[i].grid(row=i-8, column=1, padx=5, pady=5)
+#     else:
+#         tmp = str(i+1) + ":  " + str(SensorValue[i]) + " PSI" + "\n" + get_thresh_str(i)
+#         SensorLabel.append(Label(master, text=tmp))
+#         SensorLabel[i].grid(row=i, column=0, padx=5, pady=5)
+
+
 def update_values():
-    for ind, lbl in enumerate(SensorLabel):
-        #sval = get_sensor_value(ind)
-        tmp2 = str(ind+1) + ":  %0.2f" % (get_current_value(ind)) + " PSI" + "\n" + get_thresh_str(ind)
-        lbl.config(text=tmp2)
-    master.after(100, update_values)
-
+     for ind, lbl in enumerate(SensorLabel):
+         sensor_widgets[ind].update(get_current_value(ind))
+         #sval = get_sensor_value(ind)
+#         tmp2 = str(ind+1) + ":  %0.2f" % (get_current_value(ind)) + " PSI" + "\n" + get_thresh_str(ind)
+ #        lbl.config(text=tmp2)
+     master.after(100, update_values)
 
 # ROS CALLBACK
 def update_value(data):
@@ -108,21 +116,23 @@ def update_value(data):
 
 # Draw Calibrate Button
 CalibrateButton = Button(master, text="Calibrate", command=calibrate_button)
-CalibrateButton.grid(row=2, column=2)
+CalibrateButton.grid(row=0, column=sensor.max_width+1)
 # CalibrateButton.pack()
 
 # Draw Record Data Checkbox
 RecordButton = Button(master, textvariable=RecordButtonText, command=record_button)
-RecordButton.grid(row=3, column=2)
+RecordButton.grid(row=1, column=sensor.max_width+1)
 
 # Draw Filter Checkbox
 FilterCheckbox = IntVar()
-Checkbutton(master, text="Filter", variable=FilterCheckbox).grid(row=4, column=2)
+Checkbutton(master, text="Filter", variable=FilterCheckbox).grid(row=2, column=sensor.max_width+1)
 
 if __name__ == "__main__":
     # Run GUI
+    foo = Sensor(0, 0, 0)
     if not DEBUG:
         rospy.init_node('MAPS_listener')
+
         update_values()
 
         rospy.Subscriber("/pressure_events", String, update_value)
