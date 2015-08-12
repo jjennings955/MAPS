@@ -8,6 +8,7 @@ from calibration import set_threshholds, set_threshhold
 from failuredetect import *
 from filtering import apply_filter
 import numpy as np
+from configuration import SERIAL_PORT
 
 class Controller(object):
     def __init__(self, num_sensors=16, aggregation_window=5):
@@ -22,7 +23,7 @@ class Controller(object):
         return number >= 0 and number <= self.num_sensors
 
     def run(self):
-        comm = Communication('/dev/ttyACM0')
+        comm = Communication(SERIAL_PORT)
         try:
             weights = np.ones(dtype=np.float32, shape=(5,1))/5
             while True:
