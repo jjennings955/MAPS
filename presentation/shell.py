@@ -7,8 +7,10 @@
 #                 Khanh Ngo, and Ninh Nguyen
 #
 ######################################################################
+import rospy
+rospy.init_node("MAPS_GUI")
 try:
-    from calibration import *
+    from calibration import MAPSInterface
     DEBUG = False
     def get_threshhold(which):
         return rospy.get_param('calibration_threshold/%d' % (which), 0)
@@ -32,11 +34,11 @@ from fileinput import Sensor, read_layout_file
 # Intermediary Functions
 
 
-
+interface = MAPSInterface()
 
 def calibrate_button():
-    #tkMessageBox.showinfo("Calibrate", "Calibrating...")
-    calibrate(ThresholdPercent.get())
+    interface.calibrate(ThresholdPercent.get())
+    #calibrate(ThresholdPercent.get())
 
 # UNUSED?
 def get_sensor_value(ind):
@@ -57,7 +59,7 @@ SensorThreshold = []
 # Draw Threshold EntryBox
 Label(master, text="Threshold(%):  ").grid(column=2, row=0)
 ThresholdPercent = Scale(master, from_=0.0, to=100.0, orient=HORIZONTAL)
-ThresholdPercent.grid(column=2, row=1)
+#ThresholdPercent.grid(column=2, row=1)
 RecordButtonText = StringVar()
 RecordButtonText.set("Record Data")
 data_recorder = DataRecorder(topics=["/pressure_events"])
@@ -77,31 +79,19 @@ def get_thresh_str(sensor):
 
 sensor_objs = read_layout_file('whatever.csv')
 sensor_widgets = {}
-for id, sensor in sensor_objs.iteritems()
+for id, sensor in sensor_objs.iteritems():
     canvas = sensor.create_canvas(master)
     canvas.grid(row=sensor.row, column=sensor.col, padx=1, pady=1)
-    sensor_widgets[id] = canvas
+    sensor_widgets[id] = sensor
+    sensor.update_canvas(10)
 
-# for i in range(0, 16):
-#     SensorValue.append(0.0)
-#     SensorThreshold.append(0.0)
-#     if i >= 8:
-#         tmp = str(i+1) + ":  " + str(SensorValue[i]) + " PSI" + "\n" + get_thresh_str(i)
-#         SensorLabel.append(Label(master, text=tmp))
-#         SensorLabel[i].grid(row=i-8, column=1, padx=5, pady=5)
-#     else:
-#         tmp = str(i+1) + ":  " + str(SensorValue[i]) + " PSI" + "\n" + get_thresh_str(i)
-#         SensorLabel.append(Label(master, text=tmp))
-#         SensorLabel[i].grid(row=i, column=0, padx=5, pady=5)
 
 
 def update_values():
-     for ind, lbl in enumerate(SensorLabel):
-         sensor_widgets[ind].update(get_current_value(ind))
-         #sval = get_sensor_value(ind)
-#         tmp2 = str(ind+1) + ":  %0.2f" % (get_current_value(ind)) + " PSI" + "\n" + get_thresh_str(ind)
- #        lbl.config(text=tmp2)
-     master.after(100, update_values)
+     for ind, lbl in sensor_widgets.iteritems():
+         print(get_current_value(int(ind)))
+         sensor_widgets[ind].update_canvas(get_current_value(int(ind)), get_threshhold(int(ind)))
+     master.after(10, update_values)
 
 # ROS CALLBACK
 def update_value(data):
@@ -122,7 +112,7 @@ CalibrateButton.grid(row=0, column=sensor.max_width+1)
 # Draw Record Data Checkbox
 RecordButton = Button(master, textvariable=RecordButtonText, command=record_button)
 RecordButton.grid(row=1, column=sensor.max_width+1)
-
+ThresholdPercent.grid(column=sensor.max_width+1, row=3)
 # Draw Filter Checkbox
 FilterCheckbox = IntVar()
 Checkbutton(master, text="Filter", variable=FilterCheckbox).grid(row=2, column=sensor.max_width+1)
@@ -131,10 +121,12 @@ if __name__ == "__main__":
     # Run GUI
     foo = Sensor(0, 0, 0)
     if not DEBUG:
-        rospy.init_node('MAPS_listener')
+        pass
+    import rospy
+    #rospy.init_node('MAPS_listener')
 
-        update_values()
+    update_values()
 
-        rospy.Subscriber("/pressure_events", String, update_value)
-        rospy.spin()
+    #rospy.Subscriber("/pressure_events", String, update_value)
+       # rospy.spin()
     master.mainloop()

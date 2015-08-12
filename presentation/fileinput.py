@@ -26,23 +26,24 @@ class Sensor(object):
     def create_canvas(self, master):
         from Tkinter import Canvas
         import random
-        self.canvas = Canvas(master, width=100, height=50)
+        self.canvas = Canvas(master, width=75, height=50)
         self.thresh = random.randint(13, 16)
         #self.update_canvas()
         return self.canvas
 
-    def update_canvas(self, value, thresh=14):
+    def update_canvas(self, value, thresh=14.0):
         #import random
         from Tkinter import ALL, W
         #self.value = 0.8*self.value + 0.2*random.randint(0,36) # EXAMPLE ONLY!?!?!?%#%#
         self.value = value
         self.thresh = thresh
         self.canvas.delete(ALL)
-        self.canvas.create_rectangle(0, self.value, 50, 50, fill='blue')
-        self.canvas.create_line(0, self.thresh, 50, self.thresh, fill='red')
+        self.canvas.create_rectangle(0, 50 - 10*(self.value - 12), 50, 50, fill='blue')
+        self.canvas.create_line(0, 50 - 10*(self.thresh - 12), 50, 50 - 10*(self.thresh - 12), fill='red')
         self.canvas.create_rectangle(2, 2, 50, 50, outline='black')
-        self.canvas.create_text(5, 35, text="%d" % self.value, font=('Courier', '8', 'bold'), anchor=W, fill='green')
-        self.canvas.after(100, self.update_canvas)
+        self.canvas.create_text(5, 35, text="%.3f" % self.value, font=('Courier', '8', 'bold'), anchor=W, fill='green')
+        self.canvas.create_text(55, 35, text="%d" % (self.sensor_id), anchor=W)
+        #self.canvas.after(100, self.update_canvas)
 
 
 def read_layout_file(fname):

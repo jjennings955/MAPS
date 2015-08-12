@@ -12,6 +12,7 @@ const byte PACKET_START_BYTE = 0xAA;
 const unsigned int PACKET_OVERHEAD_BYTES = 3;
 const unsigned int PACKET_MIN_BYTES = PACKET_OVERHEAD_BYTES + 1;
 const unsigned int PACKET_MAX_BYTES = 64;
+const int NUM_SENSORS = 16;
 
 int controlPin[] = {s0, s1, s2, s3};
 
@@ -93,7 +94,7 @@ void setup() {
 // The main loop
 void loop() {
 //for each sensor send a packet to the PC
-  for (int i=0; i<6; i++){
+  for (int i=0; i< NUM_SENSORS; i++){
     // tells muliplexer to data for channel i
     setMux(i);
 //    delay(500);

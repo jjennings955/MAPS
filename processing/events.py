@@ -4,7 +4,7 @@ from std_msgs.msg import String
 from calibration import set_threshholds, get_threshhold, auto_calibrate
 #import random
 from filtering import set_filter
-from communication import readSerial
+#from communication import readSerial
 import aggregation
 
 def debug(foo):
