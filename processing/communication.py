@@ -2,7 +2,6 @@ import struct
 import serial
 # define packet parameters
 
-
 def analog_to_psi(analog):
     voltage = analog/1023.0*5.0
     return (voltage + 5.0*0.004)/(5.0*0.004)*0.145037738
@@ -47,12 +46,13 @@ class Communication(object):
                     packet.append(b)
                     count += 1
                 if count >= packet_size:
-                    if self.validate_packet(packet_size, packet):
+                    if Communication.validate_packet(packet_size, packet):
                         # rather return pin_id and val
-                        pin_id, val = self.extract_payload(packet)
+                        pin_id, val = Communication.extract_payload(packet)
                         return val, pin_id
 
-    def validate_packet(self, packet_size, packet):
+    @classmethod
+    def validate_packet(cls, packet_size, packet):
         """will validate the given packet to ensure is is not corrupted."""
         # check if first is start byte
         if packet[0] != Communication.PACKET_START_BYTE:
@@ -71,7 +71,8 @@ class Communication(object):
         # if each condition is passed return true
         return True
 
-    def extract_payload(self, packet):
+    @classmethod
+    def extract_payload(cls, packet):
         pin_id = struct.unpack('<B', struct.pack('B', packet[2]))[0]
         value = struct.unpack('<h', struct.pack('BB', packet[3], packet[4]))[0]
         return pin_id, analog_to_psi(value)

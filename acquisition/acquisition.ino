@@ -1,6 +1,6 @@
 
 #include <Time.h>
-int analogPin = PIN_F0;
+int inputPin = PIN_F1;
 int s0 = PIN_B0;
 int s1 = PIN_B1;
 int s2 = PIN_B2;
@@ -8,6 +8,7 @@ int s3 = PIN_B3;
 int E = PIN_B4;
 
 // define packet parameters
+const int BAUD = 250000;
 const byte PACKET_START_BYTE = 0xAA;
 const unsigned int PACKET_OVERHEAD_BYTES = 3;
 const unsigned int PACKET_MIN_BYTES = PACKET_OVERHEAD_BYTES + 1;
@@ -83,7 +84,7 @@ boolean sendPacket(int payloadSize, byte *payload)
 }
 // Initial setup
 void setup() {
-  Serial.begin(250000);          //  Baud rate ignored for USB
+  Serial.begin(BAUD);          //  Baud rate ignored for USB
   pinMode(s0, OUTPUT);
   pinMode(s1, OUTPUT);
   pinMode(s2, OUTPUT);
@@ -97,20 +98,13 @@ void loop() {
   for (int i=0; i< NUM_SENSORS; i++){
     // tells muliplexer to data for channel i
     setMux(i);
-//    delay(500);
-    // analogPin will change depending of which muliplexer the sensor(i) is on
-//    val = analogRead(analogPin);
-    val = analogRead(PIN_F1);
+    val = analogRead(inputPin);
+
     //size of payload 
     byte payload[3];
     payload[0] = (byte) (i);
     payload[1] = (byte) val;
     payload[2] = (byte) (val >> 8); // shift 8 bits to the right
-//    Serial.print(i);
-//    Serial.print(" ");
-//    Serial.print(val);
-//    Serial.print(" ");
-//    Serial.println(to_psi(val));
 
     //sendPacket adds header and footer then sends via binary USB
     sendPacket(sizeof(payload), payload);

@@ -1,4 +1,3 @@
-__author__ = 'jason'
 from widgets import Sensor
 
 def read_layout_file(fname):

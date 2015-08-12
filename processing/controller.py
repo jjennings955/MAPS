@@ -1,29 +1,34 @@
 
 from communication import Communication
-#from comm_dummy import readSerial
 
 from events import EventManager
 from aggregation import AggregationBuffer, aggregation_initialize, aggregation_update
-from calibration import set_threshholds, set_threshhold
-from failuredetect import *
+from calibration import set_threshhold
+from failuredetect import auto_fail_absolute, get_floor_threshold, get_ceil_threshold
 from filtering import apply_filter
 import numpy as np
 from configuration import SERIAL_PORT
+import serial
+import time
 
 class Controller(object):
     def __init__(self, num_sensors=16, aggregation_window=5):
         self.eventManager = EventManager()
         self.num_sensors = num_sensors
         self.aggregation_buffers = [AggregationBuffer(aggregation_window) for i in range(num_sensors)]
-        default_threshhold_dict = dict(zip([str(i) for i in range(num_sensors)], [0 for i in range(num_sensors)]))
-        set_threshholds(default_threshhold_dict) # Initialize all threshholds to 0
-        aggregation_initialize(16)
+
+        # Initialize all thresholds to zero by default
+        for i in range(num_sensors):
+            set_threshhold(i, 0)
+        auto_fail_absolute()
+        aggregation_initialize(num_sensors)
 
     def valid_pin(self, number):
         return number >= 0 and number <= self.num_sensors
 
     def run(self):
         comm = Communication(SERIAL_PORT)
+        print("Running MAPS controller on serial port: %s" % (SERIAL_PORT))
         try:
             weights = np.ones(dtype=np.float32, shape=(5,1))/5
             while True:
@@ -51,4 +56,9 @@ class Controller(object):
 
 if __name__ == "__main__":
     controller = Controller()
-    controller.run()
+    while True:
+        try:
+            controller.run()
+        except serial.serialutil.SerialException as e:
+            controller.eventManager.sleep()
+            continue

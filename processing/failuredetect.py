@@ -1,4 +1,3 @@
-__author__ = 'jason'
 import rospy
 import aggregation
 
@@ -30,3 +29,8 @@ def auto_fail(floor_percent=0.1, ceil_percent=2.0):
     current_values = aggregation.get_current_values()
     for k,v in current_values.iteritems():
         set_fail_threshhold(int(k), floor_percent*v, ceil_percent*v)
+
+def auto_fail_absolute(floor_val=12.0, ceil_val=20.0):
+    current_values = aggregation.get_current_values()
+    for k,v in current_values.iteritems():
+        set_fail_threshhold(int(k), floor_val, ceil_val)
