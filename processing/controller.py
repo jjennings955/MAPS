@@ -40,6 +40,9 @@ class Controller(object):
                     #aggregation_update(pin_id, filtered_val)
                     self.eventManager.publish_packet(pin_id, val)
                     self.aggregation_buffers[pin_id].add(val)
+                else:
+                    self.eventManager.publish_failure(pin_id)
+
                 self.eventManager.sleep()
 
         except rospy.ROSInterruptException:

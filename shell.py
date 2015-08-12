@@ -8,6 +8,7 @@
 #
 ######################################################################
 import rospy
+import os
 rospy.init_node("MAPS_GUI")
 
 try:
@@ -18,18 +19,20 @@ try:
 except:
     from presentation.calibrationdummy import *
     DEBUG = True
+
     def get_threshhold(which):
         return 0.0
+
     def get_current_value(which):
         return 0.0
 
-
+from processing.events import EventManager
 from presentation.recording import DataRecorder
 from Tkinter import *
 from presentation.layout import Sensor, read_layout_file
 
 class DemonstrationGui(object):
-    def __init__(self, layout_file='configuration\layout.csv'):
+    def __init__(self, layout_file):
         self.master = Tk()
         self.master.wm_title("MAPS Demonstration GUI")
 
@@ -40,27 +43,33 @@ class DemonstrationGui(object):
         self.sensor_objs = []
         self.sensor_widgets = {}
 
+        # Read Layout File and create Sensor Widgets
+        self.read_layout(layout_file)
+
         # State Variables for Widgets
         self.filter_state = IntVar()
         self.record_button_text = StringVar()
         self.record_button_text.set("Record Data")
 
+        # Declare container for command/config widgets
+        self.container = Frame(self.master)
+
         # Declare Widgets
-        self.calibrate_button = Button(self.master, text="Calibrate", command=self.calibrate_button_callback)
-        self.record_button = Button(self.master, textvariable=self.record_button_text, command=self.record_callback)
-        self.filter_button = Checkbutton(self.master, text="Filter", variable=self.filter_state)
-        self.threshold_label = Label(self.master, text="Threshold(%):  ")
-        self.threshold_slider = Scale(self.master, from_=0.0, to=100.0, orient=HORIZONTAL)
+        self.calibrate_button = Button(self.container, text="Calibrate", command=self.calibrate_button_callback)
+        self.record_button = Button(self.container, textvariable=self.record_button_text, command=self.record_callback)
+        self.filter_button = Checkbutton(self.container, text="Filter", variable=self.filter_state)
+        self.threshold_label = Label(self.container, text="Threshold(%):  ")
+        self.threshold_slider = Scale(self.container, from_=0.0, to=100.0, orient=HORIZONTAL)
 
-        # Read Layout File and create Sensor Widgets
-        self.read_layout(layout_file)
+        # Position widgets within container
+        self.calibrate_button.grid(row=0, column=0, pady=10)
+        self.record_button.grid(row=2, column=0, pady=10)
+        self.filter_button.grid(row=4, column=0, pady=10)
+        self.threshold_label.grid(row=6, column=0, pady=10)
+        self.threshold_slider.grid(row=8, column=0, pady=10)
 
-        # Position widgets
-        self.calibrate_button.grid(row=0, column=Sensor.max_width+1)
-        self.record_button.grid(row=1, column=Sensor.max_width+1)
-        self.filter_button.grid(row=2, column=Sensor.max_width+1)
-        self.threshold_label.grid(row=3, column=Sensor.max_width+1)
-        self.threshold_slider.grid(row=4, column=Sensor.max_width+1)
+        # Add container to window
+        self.container.grid(row=0, column=Sensor.max_width+1, rowspan=5)
 
     def read_layout(self, fname):
         self.sensor_objs = read_layout_file(fname)
@@ -84,7 +93,9 @@ class DemonstrationGui(object):
             self.record_button_text.set("Record Data")
 
     def ros_event_callback(self, data):
-        pass
+        info = EventManager.decode_sensor_message(data.data)
+        print(info)
+
 
     def calibrate_button_callback(self):
         self.command_interface.calibrate(self.threshold_slider.get()/100.0)
@@ -93,15 +104,7 @@ class DemonstrationGui(object):
         self.update_timer()
         self.master.mainloop()
 
-# ROS CALLBACK
-def update_value(data):
-    results = re.findall(r"Sensor: ([0-9]+), Pressure: ([0-9.]+)", data.data)
-    if results:
-        ind = int(results[0][0])
-        val = float(results[0][1])
-        pass # REPLACE ME
-
 if __name__ == "__main__":
     # Run GUI
-    gui = DemonstrationGui()
+    gui = DemonstrationGui(layout_file=os.path.join('configuration', 'layout.csv'))
     gui.run()

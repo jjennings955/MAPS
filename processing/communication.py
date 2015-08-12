@@ -1,6 +1,5 @@
 import struct
 import serial
-import sys
 # define packet parameters
 
 
