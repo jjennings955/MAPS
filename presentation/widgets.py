@@ -35,10 +35,10 @@ class Sensor(object):
     def update_canvas(self, value, thresh=14.0):
         self.value = value
         self.thresh = thresh
-        if self.triggerered'
+        if self.triggered > 0:
+            bar_color = 'red'
         else:
-            bar_color = 'blue'd > 0:
-            bar_color = '
+            bar_color = 'blue'
 
         self.canvas.delete(ALL)
         self.canvas.create_rectangle(2, 2, Sensor.WIDTH, Sensor.HEIGHT, outline='black')
