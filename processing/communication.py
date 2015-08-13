@@ -12,7 +12,7 @@ class Communication(object):
     PACKET_MIN_BYTES = PACKET_OVERHEAD_BYTES + 1
     PACKET_MAX_BYTES = 255
 
-    def __init__(self, serial_port='/dev/ttyACM0', baud=19200):
+    def __init__(self, serial_port='/dev/ttyACM0', baud=115200):
         self.serial_port = serial_port
         self.serial = serial.Serial(self.serial_port, baud, timeout=1)
         self.running = True

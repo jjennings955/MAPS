@@ -89,14 +89,15 @@ class DemonstrationGui(object):
 
     def ros_event_callback(self, data):
         sensor, value = EventManager.decode_sensor_message(data.data)
-        sensor = str(sensor)
-        self.sensor_widgets[sensor].trigger()
-        self.master.after(500, self.sensor_widgets[sensor].remove_trigger)
+        if sensor is not None:
+            sensor = str(sensor)
+            self.sensor_widgets[sensor].trigger()
+            self.master.after(100, self.sensor_widgets[sensor].remove_trigger)
 
     def pocket_fail_callback(self, data):
         sensor = data.data
         self.sensor_widgets[sensor].fail()
-        self.master.after(500, self.sensor_widgets[sensor].remove_fail)
+        self.master.after(100, self.sensor_widgets[sensor].remove_fail)
 
     def calibrate_button_callback(self):
         self.command_interface.calibrate(self.threshold_slider.get()/100.0)

@@ -6,5 +6,5 @@ class MAPSInterface(object):
         self.publisher = rospy.Publisher('/MAPScommand', String, queue_size=1)
 
     def calibrate(self, percent):
-        for i in range(1):
-            self.publisher.publish('autocalibrate %f' % (percent))
+        print("Calibrating")
+        self.publisher.publish('autocalibrate %f' % (percent))

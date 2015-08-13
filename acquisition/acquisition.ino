@@ -8,7 +8,7 @@ int s3 = PIN_B3;
 int E = PIN_B4;
 
 // define packet parameters
-const int BAUD = 250000;
+const int BAUD = 115200;
 const byte PACKET_START_BYTE = 0xAA;
 const unsigned int PACKET_OVERHEAD_BYTES = 3;
 const unsigned int PACKET_MIN_BYTES = PACKET_OVERHEAD_BYTES + 1;
@@ -98,6 +98,7 @@ void loop() {
   for (int i=0; i< NUM_SENSORS; i++){
     // tells muliplexer to data for channel i
     setMux(i);
+    delay(5);
     val = analogRead(inputPin);
 
     //size of payload 
@@ -110,7 +111,7 @@ void loop() {
     sendPacket(sizeof(payload), payload);
     
     //needs some delay otherwise the readings are nonsense
-    delay(50);
+    //delay(5);
   }
 }
 

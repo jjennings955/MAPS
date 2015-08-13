@@ -1,7 +1,7 @@
 import rospy
 from std_msgs.msg import String
 from calibration import  get_threshold, auto_calibrate
-from filtering import set_filter
+from filtering import set_filter, FILTER_FIR, FILTER_MEDIAN, FILTER_NONE
 import json
 
 class EventManager(object):
@@ -16,11 +16,11 @@ class EventManager(object):
         if command == 'autocalibrate':
             auto_calibrate(float(arg))
         elif command == 'enable_fir':
-            set_filter(1)
+            set_filter(FILTER_FIR)
         elif command == 'enable_median':
-            set_filter(2)
+            set_filter(FILTER_MEDIAN)
         elif command == 'disable_filter':
-            set_filter(0)
+            set_filter(FILTER_NONE)
 
     def check_threshold(self, sensor_id, sensor_value):
         threshold = get_threshold(sensor_id)
@@ -32,19 +32,19 @@ class EventManager(object):
 
     @classmethod
     def encode_sensor_message(cls, sensor_id, value):
-        return json.dumps(dict(sensor=sensor_id, pressure=value))
+        return json.dumps(dict(sensor=sensor_id, pressure=str(value)))
 
     @classmethod
     def decode_sensor_message(cls, serialized):
         decoded_dict = json.loads(serialized)
         try:
-            return int(decoded_dict['sensor']), int(decoded_dict['pressure'])
+            return int(decoded_dict['sensor']), float(decoded_dict['pressure'])
         except (ValueError, KeyError) as e:
             return None, None
 
     def check_failures(self, sensor_id, sensor_value, fail_ceil, fail_floor):
         if sensor_value > fail_ceil or sensor_value < fail_floor:
-            self.failure_publisher.publish("Sensor: %d" % (sensor_id))
+            self.publish_failure(sensor_id)
             return True
         return False
 
