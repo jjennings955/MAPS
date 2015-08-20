@@ -1,5 +1,6 @@
-__author__ = 'cseflqsn22'
-
+"""
+A test to run through the different states of the GUI without needing the sensors hooked up
+"""
 import sys
 import time
 sys.path.insert(0,'..')

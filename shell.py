@@ -28,6 +28,11 @@ from presentation.layout import Sensor, read_layout_file
 
 class DemonstrationGui(object):
     def __init__(self, layout_file):
+        """
+        A GUI to demonstrate the basic functionality of the system.
+        :param layout_file:
+        :return:
+        """
         self.master = Tk()
         self.master.wm_title("MAPS Demonstration GUI")
 
@@ -67,6 +72,11 @@ class DemonstrationGui(object):
         self.container.grid(row=0, column=Sensor.max_width+1, rowspan=5)
 
     def read_layout(self, fname):
+        """
+        Read the layout file to create the grid positioning the sensor widgets
+        :param fname: The file name of the layout file to read
+        :return: None
+        """
         self.sensor_objs = read_layout_file(fname)
         self.sensor_widgets = {}
         for idx, sensor in self.sensor_objs.iteritems():
@@ -75,11 +85,19 @@ class DemonstrationGui(object):
             self.sensor_widgets[idx] = sensor
 
     def update_timer(self):
+        """
+        The timer that updates the widgets
+        :return: None
+        """
         for ind, lbl in self.sensor_widgets.iteritems():
             self.sensor_widgets[ind].update_canvas(get_current_value(int(ind)), get_threshold(int(ind)))
         self.master.after(10, self.update_timer)
 
     def record_callback(self):
+        """
+        The callback function called when the "record" button is clicked
+        :return:
+        """
         if not self.data_recorder.recording:
             self.data_recorder.start()
             self.record_button_text.set("Stop Recording")
@@ -88,6 +106,11 @@ class DemonstrationGui(object):
             self.record_button_text.set("Record Data")
 
     def ros_event_callback(self, data):
+        """
+        The callback function called when a ros pressure event is received
+        :param data: Pressure data
+        :return:
+        """
         sensor, value = EventManager.decode_sensor_message(data.data)
         if sensor is not None:
             sensor = str(sensor)
@@ -95,14 +118,27 @@ class DemonstrationGui(object):
             self.master.after(100, self.sensor_widgets[sensor].remove_trigger)
 
     def pocket_fail_callback(self, data):
+        """
+        The callback function called when a pocket fails
+        :param data: The sensor that failed
+        :return:
+        """
         sensor = data.data
         self.sensor_widgets[sensor].fail()
         self.master.after(100, self.sensor_widgets[sensor].remove_fail)
 
     def calibrate_button_callback(self):
+        """
+        The callback function called when the calibrate button is pressed
+        :return: None
+        """
         self.command_interface.calibrate(self.threshold_slider.get()/100.0)
 
     def run(self):
+        """
+        Start the event loop for the GUI
+        :return: None
+        """
         rospy.Subscriber("/pressure_events", String, self.ros_event_callback)
         rospy.Subscriber("/failure_events", String, self.pocket_fail_callback)
         self.update_timer()

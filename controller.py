@@ -13,7 +13,15 @@ from configuration.settings import SERIAL_PORT, AGGREGATION_WINDOW, NUM_SENSORS,
 
 
 class Controller(object):
+
     def __init__(self, num_sensors=16, aggregation_window=5, fail_floor=12.0, fail_ceil=20.0):
+        """
+        Create a new controller object
+        :param num_sensors: The number of connected sensors
+        :param aggregation_window: The number of values to maintain in the aggregation system
+        :param fail_floor: The lower bound on reasonable values
+        :param fail_ceil: The upper bound on reasonable values
+        """
         self.eventManager = EventManager()
         self.num_sensors = num_sensors
         self.aggregation_buffers = [AggregationBuffer(aggregation_window) for i in range(num_sensors)]
@@ -27,9 +35,18 @@ class Controller(object):
         filtering_initialize()
 
     def valid_pin(self, number):
+        """
+        Check if a pin number is valid
+        :param number: The number to check
+        :return: True if it's a valid pin id, False if it is not
+        """
         return (number >= 0) and (number < self.num_sensors)
 
     def run(self):
+        """
+        Run the controller event loop
+        :return:
+        """
         comm = Communication(SERIAL_PORT)
         print("Running MAPS controller on serial port: %s" % (SERIAL_PORT))
         try:

@@ -1,7 +1,10 @@
-__author__ = 'jason'
 class MAPSInterface(object):
     def __init__(self):
-       pass
+        """
+        A dummy object for testing purposes
+        :return: None
+        """
+        pass
     def calibrate(self, percent):
         pass
 def calibrate(percent):

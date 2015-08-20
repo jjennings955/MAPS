@@ -2,24 +2,48 @@ import rospy
 import numpy as np
 
 def set_windowsize(n=10):
-    """Maintain an internal history of n sensor readings"""
+    """
+    Set the size of the history to maintain for each sensor
+    :param n: The number of values to keep
+    :return: None
+    """
     rospy.set_param('aggregation_windowsize', n)
 
 
 def get_current_values():
+    """
+    Get the current value of all sensors
+    :return: A map of sensor ids to current values
+    """
     return rospy.get_param('current_value', {})
 
 
 def get_current_value(which):
+    """
+    Get the current value of the specified sensor
+    :param which: The sensor to retrieve a value for
+    :return: The value of the current sensor in PSI
+    """
     return rospy.get_param('current_value/%d' % which)
 
 
 def aggregation_initialize(n):
+    """
+    Initialize the aggregation system, setting the current value of all sensors to 0
+    :param n: The number of sensors to initalize
+    :return: None
+    """
     for i in range(n):
         rospy.set_param('current_value/%d' % i, 0)
 
 
 def aggregation_update(which, val):
+    """
+    Update the current value for the specified sensor
+    :param which: The sensor to update
+    :param val: The value to set it to
+    :return: None
+    """
     rospy.set_param('current_value/%d' % which, val)
 
 

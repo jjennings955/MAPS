@@ -8,6 +8,14 @@ class Sensor(object):
     MULTIPLIER = 30
 
     def __init__(self, sensor, row, col, val=0):
+        """
+        A Sensor "Widget" used in the GUI
+        :param sensor:
+        :param row:
+        :param col:
+        :param val:
+        :return:
+        """
         self.sensor_id = sensor
         self.row = row
         self.col = col

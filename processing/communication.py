@@ -1,8 +1,12 @@
 import struct
 import serial
-# define packet parameters
 
 def analog_to_psi(analog):
+    """
+    Convert an analog value to a PSI value, using formula from data sheet
+    :param analog: The analog value (between 0 and 1023)
+    :return: The PSI value
+    """
     voltage = analog/1023.0*5.0
     return (voltage + 5.0*0.004)/(5.0*0.004)*0.145037738
 
@@ -13,11 +17,21 @@ class Communication(object):
     PACKET_MAX_BYTES = 255
 
     def __init__(self, serial_port='/dev/ttyACM0', baud=115200):
+        """
+        Create a new serial communication link.
+        :param serial_port: The name of the serial port to connect to (Something like '/dev/ttyACM0' on Ubuntu)
+        :param baud: The baud rate of the serial connection
+        :return: returns nothing
+        """
         self.serial_port = serial_port
         self.serial = serial.Serial(self.serial_port, baud, timeout=1)
         self.running = True
 
     def read_packet(self):
+        """
+        Read a single packet from the serial connection
+        :return: analog_value, pin_id corresponding to a single packet (Ex: (1, 128) is a reading of 128 on pin 1)
+        """
         packet = []
         count = 0
         packet_size = Communication.PACKET_MIN_BYTES
@@ -53,7 +67,13 @@ class Communication(object):
 
     @classmethod
     def validate_packet(cls, packet_size, packet):
-        """will validate the given packet to ensure is is not corrupted."""
+        """
+        Check if a packet is valid by checking format and checksum.
+        :param packet_size: The size of the packet in bytes
+        :param packet: The body of the packet
+        :return: True if packet is valid, false if invalid
+        """
+
         # check if first is start byte
         if packet[0] != Communication.PACKET_START_BYTE:
             print("failed PACKET_START_BYTE")
@@ -73,6 +93,11 @@ class Communication(object):
 
     @classmethod
     def extract_payload(cls, packet):
+        """
+        Extract the payload from a packet, removing any unwanted header information
+        :param packet: The packet to extract values from
+        :return: pin_id, PSI_value
+        """
         pin_id = struct.unpack('<B', struct.pack('B', packet[2]))[0]
         value = struct.unpack('<h', struct.pack('BB', packet[3], packet[4]))[0]
         return pin_id, analog_to_psi(value)
