@@ -1,0 +1,91 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module aggregation</title>
+<meta charset="utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>aggregation</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/jason/PycharmProjects/MAPS/processing/aggregation.py">/home/jason/PycharmProjects/MAPS/processing/aggregation.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="rospy.html">rospy</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="__builtin__.html#object">__builtin__.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="aggregation.html#AggregationBuffer">AggregationBuffer</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="AggregationBuffer">class <strong>AggregationBuffer</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="AggregationBuffer-__init__"><strong>__init__</strong></a>(self, window_size<font color="#909090">=1</font>)</dt></dl>
+
+<dl><dt><a name="AggregationBuffer-add"><strong>add</strong></a>(self, item)</dt></dl>
+
+<dl><dt><a name="AggregationBuffer-max"><strong>max</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="AggregationBuffer-mean"><strong>mean</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="AggregationBuffer-median"><strong>median</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="AggregationBuffer-min"><strong>min</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="AggregationBuffer-window"><strong>window</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-aggregation_initialize"><strong>aggregation_initialize</strong></a>(n)</dt><dd><tt>Initialize&nbsp;the&nbsp;aggregation&nbsp;system,&nbsp;setting&nbsp;the&nbsp;current&nbsp;value&nbsp;of&nbsp;all&nbsp;sensors&nbsp;to&nbsp;0<br>
+:param&nbsp;n:&nbsp;The&nbsp;number&nbsp;of&nbsp;sensors&nbsp;to&nbsp;initalize<br>
+:return:&nbsp;None</tt></dd></dl>
+ <dl><dt><a name="-aggregation_update"><strong>aggregation_update</strong></a>(which, val)</dt><dd><tt>Update&nbsp;the&nbsp;current&nbsp;value&nbsp;for&nbsp;the&nbsp;specified&nbsp;sensor<br>
+:param&nbsp;which:&nbsp;The&nbsp;sensor&nbsp;to&nbsp;update<br>
+:param&nbsp;val:&nbsp;The&nbsp;value&nbsp;to&nbsp;set&nbsp;it&nbsp;to<br>
+:return:&nbsp;None</tt></dd></dl>
+ <dl><dt><a name="-get_current_value"><strong>get_current_value</strong></a>(which)</dt><dd><tt>Get&nbsp;the&nbsp;current&nbsp;value&nbsp;of&nbsp;the&nbsp;specified&nbsp;sensor<br>
+:param&nbsp;which:&nbsp;The&nbsp;sensor&nbsp;to&nbsp;retrieve&nbsp;a&nbsp;value&nbsp;for<br>
+:return:&nbsp;The&nbsp;value&nbsp;of&nbsp;the&nbsp;current&nbsp;sensor&nbsp;in&nbsp;PSI</tt></dd></dl>
+ <dl><dt><a name="-get_current_values"><strong>get_current_values</strong></a>()</dt><dd><tt>Get&nbsp;the&nbsp;current&nbsp;value&nbsp;of&nbsp;all&nbsp;sensors<br>
+:return:&nbsp;A&nbsp;map&nbsp;of&nbsp;sensor&nbsp;ids&nbsp;to&nbsp;current&nbsp;values</tt></dd></dl>
+ <dl><dt><a name="-set_windowsize"><strong>set_windowsize</strong></a>(n<font color="#909090">=10</font>)</dt><dd><tt>Set&nbsp;the&nbsp;size&nbsp;of&nbsp;the&nbsp;history&nbsp;to&nbsp;maintain&nbsp;for&nbsp;each&nbsp;sensor<br>
+:param&nbsp;n:&nbsp;The&nbsp;number&nbsp;of&nbsp;values&nbsp;to&nbsp;keep<br>
+:return:&nbsp;None</tt></dd></dl>
+</td></tr></table>
+</body></html>

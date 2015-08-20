@@ -1,0 +1,81 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module controller</title>
+<meta charset="utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>controller</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/jason/PycharmProjects/MAPS/controller.py">/home/jason/PycharmProjects/MAPS/controller.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="rospy.html">rospy</a><br>
+</td><td width="25%" valign=top><a href="serial.html">serial</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="__builtin__.html#object">__builtin__.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="controller.html#Controller">Controller</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Controller">class <strong>Controller</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Controller-__init__"><strong>__init__</strong></a>(self, num_sensors<font color="#909090">=16</font>, aggregation_window<font color="#909090">=5</font>, fail_floor<font color="#909090">=12.0</font>, fail_ceil<font color="#909090">=20.0</font>)</dt><dd><tt>Create&nbsp;a&nbsp;new&nbsp;controller&nbsp;<a href="__builtin__.html#object">object</a><br>
+:param&nbsp;num_sensors:&nbsp;The&nbsp;number&nbsp;of&nbsp;connected&nbsp;sensors<br>
+:param&nbsp;aggregation_window:&nbsp;The&nbsp;number&nbsp;of&nbsp;values&nbsp;to&nbsp;maintain&nbsp;in&nbsp;the&nbsp;aggregation&nbsp;system<br>
+:param&nbsp;fail_floor:&nbsp;The&nbsp;lower&nbsp;bound&nbsp;on&nbsp;reasonable&nbsp;values<br>
+:param&nbsp;fail_ceil:&nbsp;The&nbsp;upper&nbsp;bound&nbsp;on&nbsp;reasonable&nbsp;values</tt></dd></dl>
+
+<dl><dt><a name="Controller-run"><strong>run</strong></a>(self)</dt><dd><tt>Run&nbsp;the&nbsp;controller&nbsp;event&nbsp;loop<br>
+:return:</tt></dd></dl>
+
+<dl><dt><a name="Controller-valid_pin"><strong>valid_pin</strong></a>(self, number)</dt><dd><tt>Check&nbsp;if&nbsp;a&nbsp;pin&nbsp;number&nbsp;is&nbsp;valid<br>
+:param&nbsp;number:&nbsp;The&nbsp;number&nbsp;to&nbsp;check<br>
+:return:&nbsp;True&nbsp;if&nbsp;it's&nbsp;a&nbsp;valid&nbsp;pin&nbsp;id,&nbsp;False&nbsp;if&nbsp;it&nbsp;is&nbsp;not</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>AGGREGATION_WINDOW</strong> = 5<br>
+<strong>FAIL_CEIL</strong> = 20.0<br>
+<strong>FAIL_FLOOR</strong> = 12.0<br>
+<strong>FILTER_NONE</strong> = 0<br>
+<strong>NUM_SENSORS</strong> = 16<br>
+<strong>SERIAL_PORT</strong> = '/dev/ttyACM1'</td></tr></table>
+</body></html>
